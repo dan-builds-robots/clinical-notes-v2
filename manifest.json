@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "ClinicalNotesAI",
+    "name": "Clinical Notes AI",
     "description": "Simplifying your clinical notes.",
     "version": "1.0",
 
@@ -10,6 +10,13 @@
         "48": "/images/icon-48.png",
         "128": "/images/icon-128.png"
     },
+
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["Content.js"]
+        }
+    ],
 
 
     "action": {

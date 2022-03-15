@@ -17,15 +17,18 @@ chrome.contextMenus.onClicked.addListener(function(clickData) {
         console.log(clickData);
         console.log("Made a search");
         var clinicalNotesURL = "https://dan-builds-robots.github.io/clinical-notes-website/";
-        // var createData = {
-        //     "url": wikiUrl,
-        //     "type": "popup",
-        //     "top": 5,
-        //     "left": 5,
-            // "width": Math.round(window.screen.availWidth / 2),
-            // "height": Math.round(window.screen.availHeight / 2)
-        // };
-        // chrome.windows.create(createData, function(){});
-        chrome.tabs.create({ url: clinicalNotesURL });
+
+        // create the tab, send text to the tab
+        chrome.tabs.create({ url: clinicalNotesURL}, function(newTab) {
+            console.log("created tab, about to send message");
+            // chrome.tabs.sendMessage(newTab.id, clickData.selectionText);
+            chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+                if (tabId == newTab.id) {
+                    chrome.tabs.sendMessage(newTab.id, clickData.selectionText);   
+                }
+            });
+            console.log("message sent");
+        });
+
     }
 })
