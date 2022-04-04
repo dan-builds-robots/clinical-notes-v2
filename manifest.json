@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Clinical Notes AI",
     "description": "Simplifying your clinical notes.",
-    "version": "1.0",
+    "version": "2.0",
 
     "icons": {
         "16": "/images/icon-16.png",

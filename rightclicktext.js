@@ -19,12 +19,13 @@ chrome.contextMenus.onClicked.addListener(function(clickData) {
         var clinicalNotesURL = "https://dan-builds-robots.github.io/clinical-notes-website/";
 
         // create the tab, send text to the tab
-        chrome.tabs.create({ url: clinicalNotesURL}, function(newTab) {
+        chrome.tabs.create({url: clinicalNotesURL}, function(newTab) {
             console.log("created tab, about to send message");
-            // chrome.tabs.sendMessage(newTab.id, clickData.selectionText);
             chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
                 if (tabId == newTab.id) {
-                    chrome.tabs.sendMessage(newTab.id, clickData.selectionText);   
+                    chrome.tabs.sendMessage(tabId, clickData.selectionText, function(response) {
+                        console.log(response.farewell);
+                    });
                 }
             });
             console.log("message sent");
