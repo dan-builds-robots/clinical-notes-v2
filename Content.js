@@ -14,10 +14,10 @@
 
 // const titles = document.getElementsByTagName("p");
 const elems = document.querySelectorAll('span');
+let addedCSS = false;
 // const elems = document.querySelectorAll('span, p');
 highlightRelevantText(elems);
 
-let addedCSS = false;
 
 function highlightRelevantText(texts) {
     let startHighlighting = false;
