@@ -40,6 +40,11 @@ function highlightRelevantText(texts) {
         //     startHighlighting = true;
         // }
 
+        if (texts[i].innerText.includes("Assessment")) {
+            startHighlighting = true;
+        }
+
+
         // if (texts[i].tagName == "SPAN" && texts[i].innerText.includes("Assessment")) {
         //     startHighlighting = true;
         //     // alert("FOUND ASSESSMENT")
