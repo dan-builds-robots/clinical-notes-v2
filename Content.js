@@ -38,7 +38,7 @@ function highlightRelevantText(texts) {
         //     startHighlighting = true;
         // }
 
-        if (texts[i].tagName == "SPAN" && texts[i].innerText == "Assessment and Plan:") {
+        if (texts[i].tagName == "SPAN" && texts[i].innerText.includes("Assessment")) {
             startHighlighting = true;
             // alert(h)
         }
