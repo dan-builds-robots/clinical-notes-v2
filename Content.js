@@ -17,9 +17,11 @@ const elems = document.querySelectorAll('span');
 // const elems = document.querySelectorAll('span, p');
 highlightRelevantText(elems);
 
+let addedCSS = false;
+
 function highlightRelevantText(texts) {
-    // let startHighlighting = false;
-    let startHighlighting = true;
+    let startHighlighting = false;
+    // let startHighlighting = true;
     for (var i = 0; i < texts.length; i++) {
         // highlight(0, texts[i].innerHTML.length, texts[i]);
         // let num1 = randomNum(0, texts[i].innerHTML.length);
@@ -96,34 +98,36 @@ function highlight(start_index, end_index, inputText) {
     var popupHTML = "<span class='tooltiptext'>" + "Text" + "</span>";
     innerHTML = before + "<span class='highlight tooltip'>" + important + popupHTML + "</span>" + after;
     inputText.innerHTML = innerHTML;
+    if (!addedCSS) {
+        var popupCSS = `
+            .tooltiptext {
+                visibility: hidden;
+                background-color: black;
+                color: #fff;
+                padding: 5px;
+                border-radius: 6px;
+                z-index: 2;
+                position: absolute;
+            }
 
-    var popupCSS = `
-        .tooltiptext {
-            visibility: hidden;
-            background-color: black;
-            color: #fff;
-            padding: 5px;
-            border-radius: 6px;
-            z-index: 2;
-            position: absolute;
-        }
+            .tooltip {
+                border: none;
+                underline: none;
+            }
 
-        .tooltip {
-            border: none;
-            underline: none;
-        }
+            .tooltip:hover .tooltiptext {
+                visibility: visible;
+            }
 
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-        }
-
-        .highlight {
-            background-color: #fff6b0;
-        }
-    `;
-    var styleSheet = document.createElement("style");
-    styleSheet.innerText = popupCSS;
-    document.head.appendChild(styleSheet);
+            .highlight {
+                background-color: #fff6b0;
+            }
+        `;
+        var styleSheet = document.createElement("style");
+        styleSheet.innerText = popupCSS;
+        document.head.appendChild(styleSheet);
+        addedCSS = true;
+    }
 }
 
 function randomNum(min, max) {
