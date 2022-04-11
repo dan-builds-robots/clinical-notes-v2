@@ -40,6 +40,7 @@ function highlightRelevantText(texts) {
 
         if (texts[i].tagName == "SPAN" && texts[i].innerText.includes("Assessment")) {
             startHighlighting = true;
+            alert("FOUND ASSESSMENT")
             // alert(h)
         }
     }
