@@ -13,7 +13,7 @@
 
     "content_scripts": [
         {
-            "matches": ["<all_urls>"],
+            "matches": ["https://www.dukemychart.org/Home/inside.asp?mode=visitsummary&submode=notes*"],
             "js": ["Content.js"]
         }
     ],

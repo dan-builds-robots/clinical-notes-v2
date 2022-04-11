@@ -13,18 +13,20 @@
 // }
 
 // const titles = document.getElementsByTagName("p");
-const elems = document.querySelectorAll('span, p');
+const elems = document.querySelectorAll('span');
+// const elems = document.querySelectorAll('span, p');
 highlightRelevantText(elems);
 
 function highlightRelevantText(texts) {
-    let startHighlighting = false;
-    // let startHighlighting = true;
+    // let startHighlighting = false;
+    let startHighlighting = true;
     for (var i = 0; i < texts.length; i++) {
         // highlight(0, texts[i].innerHTML.length, texts[i]);
         // let num1 = randomNum(0, texts[i].innerHTML.length);
         // let num2 = randomNum(0, texts[i].innerHTML.length);
         // if (startHighlighting && texts[i].tagName == "P") {
-        if (startHighlighting && texts[i].tagName == "SPAN") {
+        // if (startHighlighting && texts[i].tagName == "SPAN") {
+        if (startHighlighting) {
             let num1 = randomSpace(texts[i].innerHTML);
             let num2 = randomSpace(texts[i].innerHTML);
             highlight(Math.min(num1, num2) + 1, Math.max(num1, num2), texts[i]);
@@ -38,11 +40,11 @@ function highlightRelevantText(texts) {
         //     startHighlighting = true;
         // }
 
-        if (texts[i].tagName == "SPAN" && texts[i].innerText.includes("Assessment")) {
-            startHighlighting = true;
-            alert("FOUND ASSESSMENT")
-            // alert(h)
-        }
+        // if (texts[i].tagName == "SPAN" && texts[i].innerText.includes("Assessment")) {
+        //     startHighlighting = true;
+        //     // alert("FOUND ASSESSMENT")
+        //     // alert(h)
+        // }
     }
 }
 
@@ -145,3 +147,9 @@ function randomSpace(innerHTML) {
     return indexes[Math.floor(Math.random() * (indexes.length))];
 }
 
+
+
+
+            // "matches": ["<all_urls>"],
+            // "matches": ["<all_urls>"],https://www.dukemychart.org/Home/inside.asp?mode=visitsummary&submode=notes
+            // "matches": ["https://en.wikipedia.org*"],
