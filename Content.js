@@ -17,8 +17,8 @@ const elems = document.querySelectorAll('span, p');
 highlightRelevantText(elems);
 
 function highlightRelevantText(texts) {
-    // let startHighlighting = false;
     let startHighlighting = true;
+    // let startHighlighting = true;
     for (var i = 0; i < texts.length; i++) {
         // highlight(0, texts[i].innerHTML.length, texts[i]);
         // let num1 = randomNum(0, texts[i].innerHTML.length);
@@ -37,6 +37,10 @@ function highlightRelevantText(texts) {
         // if (texts[i].tagName == "SPAN" && texts[i].innerText == "Early life") {
         //     startHighlighting = true;
         // }
+
+        if (texts[i].tagName == "SPAN" && texts[i].innerText == "Assessment and Plan:") {
+            startHighlighting = true;
+        }
     }
 }
 
