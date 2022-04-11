@@ -12,17 +12,31 @@
 //     }
 // }
 
-const titles = document.getElementsByTagName("p");
-highlightRelevantText(titles);
+// const titles = document.getElementsByTagName("p");
+const elems = document.querySelectorAll('span, p');
+highlightRelevantText(elems);
 
 function highlightRelevantText(texts) {
+    // let startHighlighting = false;
+    let startHighlighting = true;
     for (var i = 0; i < texts.length; i++) {
         // highlight(0, texts[i].innerHTML.length, texts[i]);
         // let num1 = randomNum(0, texts[i].innerHTML.length);
         // let num2 = randomNum(0, texts[i].innerHTML.length);
-        let num1 = randomSpace(texts[i].innerHTML);
-        let num2 = randomSpace(texts[i].innerHTML);
-        highlight(Math.min(num1, num2) + 1, Math.max(num1, num2), texts[i]);
+        // if (startHighlighting && texts[i].tagName == "P") {
+        if (startHighlighting && texts[i].tagName == "SPAN") {
+            let num1 = randomSpace(texts[i].innerHTML);
+            let num2 = randomSpace(texts[i].innerHTML);
+            highlight(Math.min(num1, num2) + 1, Math.max(num1, num2), texts[i]);
+        }
+
+        // if (texts[i].tagName == "SPAN" && texts[i].innerText == "Career" && texts[i].id == "Career") {
+        //     startHighlighting = true;
+        // }
+
+        // if (texts[i].tagName == "SPAN" && texts[i].innerText == "Early life") {
+        //     startHighlighting = true;
+        // }
     }
 }
 
