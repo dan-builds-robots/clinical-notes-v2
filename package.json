@@ -1,0 +1,8 @@
+{
+    "name": "opennotes-extension",
+    "version": "1.0.0",
+    "main": "classification.js",
+    "dependencies": {
+        "onnxruntime-node": "^1.11.0"
+    }
+}
