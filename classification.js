@@ -18,6 +18,7 @@ async function main() {
 
         console.log(output.getTokens());
         console.log(output.getIds());
+        console.log(Object.prototype.toString.call(output.getIds));
         // console.log(tokenizer.encode(test_sent));
 
         var input = new ort.Tensor(
