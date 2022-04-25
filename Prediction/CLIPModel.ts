@@ -46,6 +46,13 @@ export class CLIPModel {
      */
     private getLabels(logits: Tensor): CLIPMultiResponse {
         // TODO: Daniel 
+        /**
+         * You can look at this as a reference:
+         * https://github.com/asappresearch/clip/blob/main/test_load.py#L37-L39
+         * The challenge will be in figuring out how to perform these operations
+         * in javascript.
+         */
+        
         throw Error("Not Implemented");
     }
 }
