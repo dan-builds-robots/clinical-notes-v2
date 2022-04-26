@@ -1,9 +1,11 @@
 {
     "name": "opennotes-extension",
     "version": "1.0.0",
-    "main": "classification.js",
+    "main": "classification.mjs",
     "dependencies": {
+        "node-fetch": "^2.6.7",
         "onnxruntime-node": "^1.11.0",
-        "tokenizers": "^0.12.0"
+        "tokenizers": "^0.12.0",
+        "ts-node": "^10.7.0"
     }
 }
