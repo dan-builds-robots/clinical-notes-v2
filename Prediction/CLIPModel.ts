@@ -2,9 +2,9 @@ import { InferenceSession, Tensor } from "onnxruntime-node";
 
 // No typing support for tokenizer library
 export type CLIPInput = {
-    input_ids,
-    attention_mask,
-    token_type_ids,
+    input_ids: any,
+    attention_mask: any,
+    token_type_ids: any,
 };
 
 export type CLIPMultiResponse = {
