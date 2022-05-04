@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Tensor, InferenceSession } from 'onnxruntime-node';
 import { Tokenizer } from './Prediction/Tokenizer';
 =======
@@ -8,9 +9,11 @@ import { Tokenizer } from './Prediction/Tokenizer';
 
 import util from 'util';
 import ort, { Tensor } from 'onnxruntime-node';
+=======
+>>>>>>> refactor CLIPModel
 import { Collator } from './Prediction/Collator';
-// import { Tokenizer, InputSequenc } from 'tokenizers/bindings/tokenizer';
 import { Tokenizer } from './Prediction/Tokenizer.js';
+<<<<<<< HEAD
 import { CLIPModel } from './Prediction/CLIPModel';
 // let temp = require('./popup');
 // let { Collator } = require('./modules/Collator.ts');
@@ -19,6 +22,8 @@ import { CLIPModel } from './Prediction/CLIPModel';
 
 // const InferenceSession = ort.InferenceSession;
 >>>>>>> finish implement collator, add corrected typing to CLIPModel
+=======
+>>>>>>> refactor CLIPModel
 
 /**
  * Sandbox for testing classes and functions.
@@ -56,12 +61,6 @@ async function main() {
 =======
     try {
 
-        let t = new Tensor(new Int32Array([1,2,3,4,5,6]), [2,3,1]);
-        console.log(t);
-        console.log(t.dims)
-        console.log(t.data.slice(0, t.dims[0]));
-        throw Error('stop')
-        
         let split_sentence_input = [
             "I have discussed with the patient in detail about the diagnosis of breast cancer and the surgical options, and medical oncologist has discussed with her issues about adjuvant or neoadjuvant chemotherapy.",
             "We have decided to recommend to the patient breast conservation surgery with left breast lumpectomy with preoperative sentinel lymph node injection and mapping and left axillary dissection.",
@@ -72,15 +71,9 @@ async function main() {
             "She was certainly encouraged to obtain further surgical medical opinions prior to proceeding.",
             "I believe the patient has given full informed consent and desires to proceed with the above."
         ];
-        // console.log(split_sentence_input);
 
         const col = new Collator();
         let tokenizer = Tokenizer.fromFile('./tokenizer.json');
-
-        // let t = Tokenizer.fromString("");
-        // let tokenizer = Tokenizer.fromFile("tokenizer.json");
-
-        // let tokenizer = Tokenizer.fromFile('./tokenizer.json');
 
         let inputs = await col.collate(
             split_sentence_input,
@@ -90,6 +83,7 @@ async function main() {
 
         console.log(inputs[0]);
 
+<<<<<<< HEAD
         let clip = new CLIPModel(
             './bert.onnx',
             './classifier.onnx',
@@ -148,13 +142,18 @@ async function main() {
 
         console.log('success');
 
+=======
+>>>>>>> refactor CLIPModel
     } catch(e) {
         console.error(`inference failed: ${e}`);
     }
 }
 
+<<<<<<< HEAD
 function randomTensor(size: number): number[] {
         return Array.from({length: size}, () => Math.random());
 }
 
+=======
+>>>>>>> refactor CLIPModel
 main();

@@ -58,9 +58,18 @@ export class Collator implements ICollator {
                     .concat(cur_tids.slice(cur_sent.length / 2));
                 
                 output.push({
-                    input_ids: new Tensor(new BigInt64Array(input_ids.map((a) => BigInt(a)))),
-                    attention_mask: new Tensor(new BigInt64Array(attention_mask.map((a) => BigInt(a)))),                        
-                    token_type_ids: new Tensor(new BigInt64Array(token_type_ids.map((a) => BigInt(a)))),
+                    input_ids: new Tensor(
+                        new Int32Array(input_ids),
+                        [input_ids.length, 1],
+                    ),
+                    attention_mask: new Tensor(
+                        new Int32Array(attention_mask),
+                        [attention_mask.length, 1],
+                    ),                        
+                    token_type_ids: new Tensor(
+                        new Int32Array(token_type_ids),
+                        [token_type_ids.length, 1],
+                    ),
                 })
                 continue;
             }
@@ -103,7 +112,7 @@ export class Collator implements ICollator {
         index: number,
         start_context: number,
         end_context: number,
-    ): TypedTensor<"int64"> {
+    ): TypedTensor<"int32"> {
         const pre_context_attn = encoded_sents
             .slice(start_context, index)
             .map((a) => a.getAttentionMask().slice(1))
@@ -119,7 +128,7 @@ export class Collator implements ICollator {
             .concat(post_context_attn);
         
         return new Tensor(
-            new BigInt64Array(attention_mask.map((a)=>BigInt(a))),
+            new Int32Array(attention_mask),
             [attention_mask.length, 1],
         );
     }
@@ -128,13 +137,13 @@ export class Collator implements ICollator {
         sentence_len: number,
         pre_context_len: number,
         post_context_len: number,
-    ): TypedTensor<"int64"> {
+    ): TypedTensor<"int32"> {
         let token_type_ids: number[] = this.typeVector(pre_context_len, 1)
             .concat(this.typeVector(sentence_len, 0))
             .concat(this.typeVector(post_context_len, 1));
 
         return new Tensor(
-            new BigInt64Array(token_type_ids.map((a)=>BigInt(a))), 
+            new Int32Array(token_type_ids), 
             [token_type_ids.length, 1],
         );
     }
@@ -158,7 +167,7 @@ export class Collator implements ICollator {
             .concat(post_context_ids);
         
         let input_ids = new Tensor(
-            new BigInt64Array(input_ids_array.map((a)=>BigInt(a))),
+            new Int32Array(input_ids_array),
             [input_ids_array.length, 1]
         );
 
