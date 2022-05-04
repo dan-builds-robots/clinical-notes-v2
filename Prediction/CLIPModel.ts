@@ -1,10 +1,16 @@
-import { InferenceSession, Tensor } from "onnxruntime-node";
+import { InferenceSession, Tensor, TypedTensor } from "onnxruntime-node";
 
-// No typing support for tokenizer library
+// Default ONNX setting is to use "int64"
+/**
+ * Default ONNX setting is to use "int64" however this is
+ * wasteful and all of our inputs start out as "int32". In 
+ * future update will export model with "int32" instead and
+ * update these types.
+ */
 export type CLIPInput = {
-    input_ids: any,
-    attention_mask: any,
-    token_type_ids: any,
+    input_ids: TypedTensor<"int64">,
+    attention_mask: TypedTensor<"int64">,
+    token_type_ids: TypedTensor<"int64">,
 };
 
 export type CLIPMultiResponse = {
@@ -20,21 +26,23 @@ export enum CLIPLabel {
 }
 
 export class CLIPModel {
-    bertSession: InferenceSession;
-    classifierSession: InferenceSession;
+    bertSession: Promise<InferenceSession>;
+    classifierSession: Promise<InferenceSession>;
 
-    async init(
+
+    constructor(
         bertPath: string,
         classifierPath: string,
-        thresholdPath: string,
+        // thresholdPath: string,
     ) {
-        this.bertSession = await InferenceSession.create(bertPath);
-        this.classifierSession = await InferenceSession.create(classifierPath);
+        this.bertSession = InferenceSession.create(bertPath);
+        this.classifierSession = InferenceSession.create(classifierPath);
     }
 
     async forward(input: CLIPInput, options = {}): Promise<CLIPMultiResponse> {
-        const bertResult = await this.bertSession.run(input, options);
-        const classifierResult = await this.classifierSession.run(bertResult, options);
+        const bertResult = await (await this.bertSession).run(input, options);
+        console.log(bertResult);
+        const classifierResult = await (await this.classifierSession).run(bertResult, options);
         return this.getLabels(classifierResult['last_hidden_state']);
     }
 

@@ -1,4 +1,4 @@
-import { Tokenizer } from "./Tokenizer";
+import { Tokenizer } from "./Tokenizer.js";
 import { CLIPInput } from "./CLIPModel";
 
 export interface ICollator {

@@ -2,6 +2,8 @@ import util from 'util';
 import { Tokenizer as HFTokenizer } from 'tokenizers/bindings/tokenizer';
 
 export class Tokenizer {
+    static CLS = 101;
+    static SEP = 102;
 
     constructor(tokenizer) {
         this.tokenizer = tokenizer;
