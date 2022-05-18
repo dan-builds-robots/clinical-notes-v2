@@ -29,8 +29,8 @@ async function main() {
         );
 
         let model = new CLIPModel(
-            './model.onnx',
-            './prod_classifier.onnx',
+            './bert.onnx',
+            './classifier.onnx',
         )
 
         let out = await model.forward(inputs[0])
