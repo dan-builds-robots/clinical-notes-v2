@@ -1,5 +1,6 @@
 import { Collator } from './Prediction/Collator';
 import { Tokenizer } from './Prediction/Tokenizer.js';
+import { CLIPModel } from './Prediction/CLIPModel';
 
 /**
  * Sandbox for testing classes and functions.
@@ -19,16 +20,21 @@ async function main() {
             "I believe the patient has given full informed consent and desires to proceed with the above."
         ];
 
-        const col = new Collator();
         let tokenizer = Tokenizer.fromFile('./tokenizer.json');
+        const col = new Collator(tokenizer);
 
         let inputs = await col.collate(
             split_sentence_input,
-            tokenizer,
             2
         );
 
-        console.log(inputs[0]);
+        let model = new CLIPModel(
+            './model.onnx',
+            './prod_classifier.onnx',
+        )
+
+        let out = await model.forward(inputs[0])
+        console.log(out)
 
     } catch(e) {
         console.error(`inference failed: ${e}`);

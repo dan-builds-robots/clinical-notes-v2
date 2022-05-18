@@ -4,17 +4,21 @@ import { ICollator } from './ICollator';
 import { Tensor, TypedTensor } from "onnxruntime-node";
 
 export class Collator implements ICollator {
+    tokenizer: Tokenizer
+
+    constructor(tokenizer: Tokenizer) {
+        this.tokenizer = tokenizer;
+    }
+
     /**
      * This implementation is based on https://github.com/asappresearch/clip/blob/main/sentclf/bert.py#L70-L188
      * Some of the inefficiencies of the original implementation are addressed here. In particular,
      * we tokenize once and then apply context after tokenization.
      * @param sentences List of sentences to tokenize and apply context to.
-     * @param tokenizer Tokenizer object to use for tokenization.
      * @param nContextSentences number of context sentences to append to either end of the input.
      */
     async collate(
         sentences: string[], 
-        tokenizer: Tokenizer, 
         nContextSentences: number
     ): Promise<CLIPInput[]> {
 
@@ -24,7 +28,7 @@ export class Collator implements ICollator {
             .concat(sentences)
             .concat(Array.from({length: nContextSentences}, () => '< doc _ end >'));
 
-        let encoded_sents = await Promise.all(paddedSents.map(async sent => tokenizer.encode(sent)));
+        let encoded_sents = await Promise.all(paddedSents.map(async sent => this.tokenizer.encode(sent)));
 
         for (let i = nContextSentences; i < paddedSents.length - nContextSentences; i++) {
             var start_context = Math.max(i-nContextSentences, 0);
@@ -59,16 +63,16 @@ export class Collator implements ICollator {
                 
                 output.push({
                     input_ids: new Tensor(
-                        new Int32Array(input_ids),
-                        [input_ids.length, 1],
+                        new BigInt64Array(input_ids.map(BigInt)),
+                        [1, input_ids.length],
                     ),
                     attention_mask: new Tensor(
-                        new Int32Array(attention_mask),
-                        [attention_mask.length, 1],
+                        new BigInt64Array(attention_mask.map(BigInt)),
+                        [1, attention_mask.length],
                     ),                        
                     token_type_ids: new Tensor(
-                        new Int32Array(token_type_ids),
-                        [token_type_ids.length, 1],
+                        new BigInt64Array(token_type_ids.map(BigInt)),
+                        [1, token_type_ids.length],
                     ),
                 })
                 continue;
@@ -112,7 +116,7 @@ export class Collator implements ICollator {
         index: number,
         start_context: number,
         end_context: number,
-    ): TypedTensor<"int32"> {
+    ): TypedTensor<"int64"> {
         const pre_context_attn = encoded_sents
             .slice(start_context, index)
             .map((a) => a.getAttentionMask().slice(1))
@@ -128,8 +132,8 @@ export class Collator implements ICollator {
             .concat(post_context_attn);
         
         return new Tensor(
-            new Int32Array(attention_mask),
-            [attention_mask.length, 1],
+            new BigInt64Array(attention_mask.map(BigInt)),
+            [1, attention_mask.length],
         );
     }
 
@@ -137,14 +141,14 @@ export class Collator implements ICollator {
         sentence_len: number,
         pre_context_len: number,
         post_context_len: number,
-    ): TypedTensor<"int32"> {
+    ): TypedTensor<"int64"> {
         let token_type_ids: number[] = this.typeVector(pre_context_len, 1)
-            .concat(this.typeVector(sentence_len, 0))
-            .concat(this.typeVector(post_context_len, 1));
+            .concat(this.typeVector(sentence_len-1, 0)) // [SEP] token should be in context
+            .concat(this.typeVector(post_context_len+1, 1));
 
         return new Tensor(
-            new Int32Array(token_type_ids), 
-            [token_type_ids.length, 1],
+        new BigInt64Array(token_type_ids.map(BigInt)), 
+            [1, token_type_ids.length],
         );
     }
 
@@ -167,8 +171,8 @@ export class Collator implements ICollator {
             .concat(post_context_ids);
         
         let input_ids = new Tensor(
-            new Int32Array(input_ids_array),
-            [input_ids_array.length, 1]
+            new BigInt64Array(input_ids_array.map(BigInt)),
+            [1, input_ids_array.length]
         );
 
         return {

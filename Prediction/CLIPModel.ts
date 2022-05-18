@@ -1,9 +1,9 @@
 import { InferenceSession, Tensor, TypedTensor } from "onnxruntime-node";
 
 export type CLIPInput = {
-    input_ids: TypedTensor<"int32">,
-    attention_mask: TypedTensor<"int32">,
-    token_type_ids: TypedTensor<"int32">,
+    input_ids: TypedTensor<"int64">,
+    attention_mask: TypedTensor<"int64">,
+    token_type_ids: TypedTensor<"int64">,
 };
 
 export enum CLIPLabel {
@@ -29,9 +29,21 @@ export class CLIPModel {
 
     async forward(input: CLIPInput, options = {}): Promise<CLIPLabel[]> {
         const bertResult = await (await this.bertSession).run(input, options);
-        const classifierResult = await (await this.classifierSession).run(bertResult, options);
-        const predictions = <TypedTensor<'int32'>> classifierResult['5'];
+        let classifier_input = {
+            'input': bertResult.pooler_output.reshape([768])
+        };
+        const classifierResult = await (await this.classifierSession).run(classifier_input, options);
+        const predictions = <TypedTensor<'int32'>> classifierResult['3'];
 
-        return Array.from(predictions.data).map((a) => a as CLIPLabel);
+        return this.labelFromPrediction(predictions);
+    }
+
+    labelFromPrediction(predictions: TypedTensor<'int32'>): CLIPLabel[] {
+        let labels = predictions.data.reduce(
+            (out: number[], val: number, idx: number) => val == 1 ? out.concat(idx) : out,
+            []
+        );
+
+        return <CLIPLabel[]> labels;
     }
 }
