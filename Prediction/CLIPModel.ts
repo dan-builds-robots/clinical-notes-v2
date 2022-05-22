@@ -1,58 +1,49 @@
-import { InferenceSession, Tensor } from "onnxruntime-node";
+import { InferenceSession, Tensor, TypedTensor } from "onnxruntime-node";
 
-// No typing support for tokenizer library
 export type CLIPInput = {
-    input_ids,
-    attention_mask,
-    token_type_ids,
-};
-
-export type CLIPMultiResponse = {
-    label: CLIPLabel[],
+    input_ids: TypedTensor<"int64">,
+    attention_mask: TypedTensor<"int64">,
+    token_type_ids: TypedTensor<"int64">,
 };
 
 export enum CLIPLabel {
-    ReasonForVisit,
-    NatureOfDisease,
-    Prognosis,
-    TherapyAndRationale,
-    ActionItems,
+    ReasonForVisit = 0,
+    NatureOfDisease = 1,
+    Prognosis = 2,
+    TherapyAndRationale = 3,
+    ActionItems = 4,
 }
 
 export class CLIPModel {
-    bertSession: InferenceSession;
-    classifierSession: InferenceSession;
+    bertSession: Promise<InferenceSession>;
+    classifierSession: Promise<InferenceSession>;
 
-    async init(
+
+    constructor(
         bertPath: string,
         classifierPath: string,
-        thresholdPath: string,
     ) {
-        this.bertSession = await InferenceSession.create(bertPath);
-        this.classifierSession = await InferenceSession.create(classifierPath);
+        this.bertSession = InferenceSession.create(bertPath);
+        this.classifierSession = InferenceSession.create(classifierPath);
     }
 
-    async forward(input: CLIPInput, options = {}): Promise<CLIPMultiResponse> {
-        const bertResult = await this.bertSession.run(input, options);
-        const classifierResult = await this.classifierSession.run(bertResult, options);
-        return this.getLabels(classifierResult['last_hidden_state']);
+    async forward(input: CLIPInput, options = {}): Promise<CLIPLabel[]> {
+        const bertResult = await (await this.bertSession).run(input, options);
+        let classifier_input = {
+            'input': bertResult.pooler_output.reshape([768])
+        };
+        const classifierResult = await (await this.classifierSession).run(classifier_input, options);
+        const predictions = <TypedTensor<'int32'>> classifierResult['3'];
+
+        return this.labelFromPrediction(predictions);
     }
 
-    /**
-     * Takes logits and coverts them to labels by comparing against thresholds
-     * for each class.
-     * @param logits output logits from CLIP classification layer.
-     * @returns a list of labels.
-     */
-    private getLabels(logits: Tensor): CLIPMultiResponse {
-        // TODO: Daniel 
-        /**
-         * You can look at this as a reference:
-         * https://github.com/asappresearch/clip/blob/main/test_load.py#L37-L39
-         * The challenge will be in figuring out how to perform these operations
-         * in javascript.
-         */
-        
-        throw Error("Not Implemented");
+    labelFromPrediction(predictions: TypedTensor<'int32'>): CLIPLabel[] {
+        let labels = predictions.data.reduce(
+            (out: number[], val: number, idx: number) => val == 1 ? out.concat(idx) : out,
+            []
+        );
+
+        return <CLIPLabel[]> labels;
     }
 }
